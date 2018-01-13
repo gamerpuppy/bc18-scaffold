@@ -1,0 +1,3 @@
+[submodule "battlecode-2018-java"]
+	path = battlecode-2018-java
+	url = https://github.com/gamerpuppy/battlecode-2018-java.git
