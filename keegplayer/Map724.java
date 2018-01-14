@@ -26,6 +26,8 @@ public class Map724 {
         passable = new boolean[width][height];
         state = typeOfSymmetry();
 
+        long time = System.nanoTime();
+
         MapLocation loc = new MapLocation(gc.planet(),0,0);
 
         for (int x = 0; x < width; x++){
@@ -35,6 +37,25 @@ public class Map724 {
                 passable[x][y] = map.isPassableTerrainAt(loc) == 1;
             }
         }
+//        Debug.printMap();
+
+        time = System.nanoTime() - time;
+        System.out.println("Time for method 1: "+time);
+
+        boolean passable2[][] = new boolean[width][height];
+
+        long time2 = System.nanoTime();
+
+        for (int x = 0; x < width; x++){
+            for (int y = 0; y < height; y++){
+                loc.setX(x);
+                loc.setY(y);
+                passable2[x][y] = passable2[x][y];
+            }
+        }
+
+        time2 = System.nanoTime() - time2;
+        System.out.println("Time for method 2: "+time2);
     }
 
     static State typeOfSymmetry(){

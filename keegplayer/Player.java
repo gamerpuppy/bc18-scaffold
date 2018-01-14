@@ -11,6 +11,7 @@ public class Player {
         gc = get_gc();
         if (gc.planet() == Planet.Earth){
             Map724.initMap();
+            System.out.println(gc.unit(gc.units().get(0).id()).location().mapLocation());
             runEarth();
         }
         else {
@@ -51,7 +52,7 @@ public class Player {
     public class Bot724 {
         public int id;
         public UnitType type;
-        public Location loc;
+        public Location724 loc;
         public int move_cd;
         public int attack_cd;
         public int active_cd;
