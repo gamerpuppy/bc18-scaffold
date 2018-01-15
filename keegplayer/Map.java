@@ -3,10 +3,11 @@ import bc.MapLocation;
 import bc.PlanetMap;
 import bc.VecUnit;
 
-public class Map724 {
+public class Map {
 
     static GameController gc = Player.get_gc();
 
+    //TODO USE THIS INFO SOMEHOW
     enum State {
         REFLECTED,
         ROTATED,
@@ -19,12 +20,14 @@ public class Map724 {
     public static int height;
     public static boolean passable[][];
 
-    public static void initMap(){
+    public static void init(){
         map = gc.startingMap(gc.planet());
         width = (int) map.getWidth();
         height = (int) map.getHeight();
         passable = new boolean[width][height];
-        state = typeOfSymmetry();
+//        state = typeOfSymmetry();
+        state = State.NONE;
+
 
         MapLocation loc = new MapLocation(gc.planet(),0,0);
 
@@ -35,10 +38,12 @@ public class Map724 {
                 passable[x][y] = map.isPassableTerrainAt(loc) == 1;
             }
         }
+
 //        Debug.printMap();
 
     }
 
+    //TODO MAKE THIS WORK
     static State typeOfSymmetry(){
         VecUnit initialUnits = map.getInitial_units();
         System.out.println("Initial units list size -> "+initialUnits.size());

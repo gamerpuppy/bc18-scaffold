@@ -1,17 +1,18 @@
 import bc.*;
 
-import java.util.ArrayList;
-
 public class Player {
 
     static GameController gc = null;
-    static ArrayList<Group> army = new ArrayList<>();
+    static short turn = 0;
+    static Team team;
 
     public static void main(String args[]){
         gc = get_gc();
+        team = gc.team();
+
         if (gc.planet() == Planet.Earth){
-            Map724.initMap();
-            System.out.println(gc.unit(gc.units().get(0).id()).location().mapLocation());
+            Map.init();
+            UnitManager.init();
             runEarth();
         }
         else {
@@ -22,10 +23,18 @@ public class Player {
 
     static void runEarth(){
         while (true) {
-//            for (Group group : army)
-//                group.turn();
+            Debug.startTime("unit_update");
+            UnitManager.update();
+            Debug.endTime("unit_update");
+            Debug.println("turn", turn);
+            for(int i = 0; i < UnitManager.newLen; i++){
+                int unitIdx = UnitManager.newUnits[i];
+                Debug.printBotInfo(UnitManager.units[unitIdx]);
+            }
+            WorkerManager.turn();
 
-            gc.nextTurn();
+
+            nextTurn();
         }
     }
 
@@ -34,28 +43,22 @@ public class Player {
 
 
 
-            gc.nextTurn();
+            nextTurn();
         }
+    }
+
+    static void nextTurn(){
+        turn++;
+        try {
+            Debug.bw.flush();
+        } catch (Exception e){}
+        gc.nextTurn();
     }
 
     static GameController get_gc(){
         if (gc == null)
             gc = new GameController();
         return gc;
-    }
-
-    public class Location724 {
-        public int x;
-        public int y;
-    }
-
-    public class Bot724 {
-        public int id;
-        public UnitType type;
-        public Location724 loc;
-        public int move_cd;
-        public int attack_cd;
-        public int active_cd;
     }
 
 }
