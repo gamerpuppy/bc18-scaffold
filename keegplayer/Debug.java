@@ -1,9 +1,8 @@
-import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 import java.util.HashMap;
 
-public class Debug {
+class Debug {
 
     static HashMap<String, Long> timers = new HashMap<>(50);
     static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
@@ -12,23 +11,15 @@ public class Debug {
         try {
             for (int y = 0; y < Map.width; y++) {
                 for (int x = 0; x < Map.height; x++) {
-                    if (Map.passable[x][y])
-                        bw.write("  ");
+                    if (Map.wall[x][y])
+                        bw.write("X");
                     else
-                        bw.write('X');
+                        bw.write("  ");
                 }
                 bw.newLine();
             }
 
         } catch (Exception e){}
-    }
-
-    static void printPassableAt(int x, int y){
-        try {
-            boolean passable = Map.passable[x][y];
-            bw.write("X: "+x+" Y: "+y+"is "+(passable ? "" : "not ")+"passable\n");
-        } catch (Exception e){}
-
     }
 
     static void printBotInfo(Bot bot){
@@ -38,16 +29,30 @@ public class Debug {
         } catch (Exception e){}
     }
 
-    static void println(String s){
+    static void println(Object o){
         try {
-            bw.write(s);
+            bw.write(o.toString());
             bw.newLine();
         } catch (Exception e){}
     }
 
-    static void println(String desc, int val){
+    static void println(Object a, Object b){
+        try {
+            bw.write(a+"-> "+b);
+            bw.newLine();
+        } catch (Exception e){}
+    }
+
+    static void println(String desc, long val){
         try {
             bw.write(desc+"-> "+val);
+            bw.newLine();
+        } catch (Exception e){}
+    }
+
+    static void println(String desc, boolean bool){
+        try {
+            bw.write(desc+"-> "+bool);
             bw.newLine();
         } catch (Exception e){}
     }

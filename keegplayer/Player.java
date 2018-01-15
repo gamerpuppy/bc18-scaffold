@@ -18,18 +18,25 @@ public class Player {
         else {
             runMars();
         }
-
     }
 
     static void runEarth(){
         while (true) {
-            Debug.startTime("unit_update");
             UnitManager.update();
-            Debug.endTime("unit_update");
-            Debug.println("turn", turn);
+
             for(int i = 0; i < UnitManager.newLen; i++){
-                int unitIdx = UnitManager.newUnits[i];
-                Debug.printBotInfo(UnitManager.units[unitIdx]);
+
+                int idx = UnitManager.newUnits[i];
+                Bot bot = UnitManager.entities[idx];
+
+                if (bot.type == UnitType.Worker) {
+                    Debug.println("adding worker",bot);
+                    WorkerManager.addWorker(idx);
+                } else if (bot.type == UnitType.Factory){
+                    Debug.println("adding factory",bot);
+                    WorkerManager.addFactory(idx);
+                }
+
             }
             WorkerManager.turn();
 
