@@ -1,4 +1,5 @@
 import bc.Direction;
+import bc.MapLocation;
 
 class Loc {
 
@@ -15,10 +16,25 @@ class Loc {
         this.y = (short)y;
     }
 
+    void set(MapLocation loc){
+        x = (short) loc.getX();
+        y = (short) loc.getY();
+    }
+
 
     @Override
     public String toString() {
         return "x: "+x+" y: "+y;
+    }
+
+    @Override
+    public int hashCode() {
+        return y*50+x;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj.hashCode() == hashCode();
     }
 
     boolean isAdj(Loc loc){

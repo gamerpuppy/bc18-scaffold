@@ -1,58 +1,87 @@
 import bc.GameController;
 import bc.Unit;
 import bc.VecUnit;
-
 import java.util.HashMap;
 
 class UnitManager {
 
-    static GameController gc;
+    static GameController gc = Player.get_gc();
 
-    private static final int UNIT_MAP_SIZE = 5000;
-    private static final int NEW_ARRAY_SIZE = 100;
+    // Key: id Value: idx to store array
+    private static HashMap<Integer, Integer> unitMap = new HashMap<>(5000);
+    private static Entity store[] = new Entity[1000];
+    private static int storeIdx = 0;
 
-    static HashMap<Integer, Integer> unitMap;
-    static Entity active[];
-    private static int nextIdx = 0;
-    static int newUnits[];
+    static Entity active[] = new Entity[500];
+    static Entity newUnits[] = new Entity[30];
+    static Entity enemies[] = new Entity[300];
+    static int activeLen = 0;
     static int newLen = 0;
+    static int enemyLen = 0;
 
     static void init(){
-        gc =  Player.get_gc();
-        unitMap = new HashMap<Integer, Integer>(UNIT_MAP_SIZE);
-        newUnits = new int[NEW_ARRAY_SIZE];
-
-        active = new Entity[200];
-        for(int i = 0; i < active.length; i++){
-            active[i] = new Entity();
+        for(int i = 0; i < store.length; i++){
+            store[i] = new Entity();
         }
-
-
-
     }
 
     static void update(){
+        activeLen = 0;
         newLen = 0;
-        VecUnit unitList = gc.myUnits();
-        long listSize = gc.units().size();
+        enemyLen = 0;
 
-        for(int i = 0; i < listSize; i++){
+        VecUnit unitList = gc.units();
+
+        for(int i = 0; i < gc.units().size(); i++){
 
             Unit unit = unitList.get(i);
             int id = unit.id();
             Integer value = unitMap.get(id);
-            if (value == null){
-                unitMap.put(id, nextIdx);
-                entities[nextIdx].init(unit);
-                newUnits[newLen] = nextIdx;
-                newLen++;
-                nextIdx++;
+            boolean myteam = unit.team() == Player.team;
+
+            Entity entity;
+            if (value == null) {
+                unitMap.put(id, storeIdx);
+                entity = store[storeIdx++];
+                entity.loc.set(unit.location().mapLocation());
             } else {
-                entities[value].last_seen = Player.turn;
-                entities[value].hp = (short) unit.health();
+                entity = store[value];
+                if (!myteam)
+                    entity.loc.set(unit.location().mapLocation());
+            }
+
+            entity.seen = Player.turn;
+            entity.myTeam = myteam;
+
+            active[activeLen++] = entity;
+            if (unit.team() == Player.team){
+                newUnits[newLen++] = entity;
+            } else {
+                enemies[enemyLen++] = entity;
             }
         }
+
+        updatePass();
     }
+
+    private static void updatePass(){
+        for (int i = 0; i < activeLen; i++) {
+            Entity e = active[i];
+            short x = e.loc.x;
+            short y = e.loc.y;
+            Map.pass[x][y] = false;
+        }
+    }
+
+    static void finishTurn(){
+        for (int i = 0; i < activeLen; i++) {
+            Entity e = active[i];
+            short x = e.loc.x;
+            short y = e.loc.y;
+            Map.pass[x][y] = false;
+        }
+    }
+
 
 }
 

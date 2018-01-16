@@ -1,31 +1,57 @@
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 import java.util.HashMap;
+import java.util.HashSet;
 
 class Debug {
 
-    static HashMap<String, Long> timers = new HashMap<>(50);
+    private static HashMap<String, Long> timers = new HashMap<>(50);
     static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
     static void printMap(){
         try {
-            for (int y = 0; y < Map.width; y++) {
-                for (int x = 0; x < Map.height; x++) {
-                    if (Map.wall[x][y])
-                        bw.write("X");
-                    else
+            for (int y = 0; y < Map.height; y++) {
+                for (int x = 0; x < Map.width; x++) {
+                    if (Map.pass[x][y])
                         bw.write("  ");
+                    else
+                        bw.write("X");
                 }
                 bw.newLine();
             }
-
+            bw.flush();
         } catch (Exception e){}
     }
 
-    static void printBotInfo(Bot bot){
+    static void showPath(Path path){
+        HashSet<Loc> pathSet = new HashSet<>(path.locList);
         try {
-            bw.write(bot.toString());
-            bw.newLine();
+            Loc loc = new Loc(0,0);
+            for (loc.y = 0; loc.y < Map.height; loc.y++) {
+                for (loc.x = 0; loc.x < Map.width; loc.x++) {
+                    if(pathSet.contains(loc)) {
+                        bw.write("P");
+                    } else {
+                        if (Map.pass[loc.x][loc.y])
+                            bw.write("  ");
+                        else
+                            bw.write("X");
+                    }
+                }
+                bw.newLine();
+            }
+            bw.flush();
+        } catch (Exception e){}
+    }
+
+    static void printPath(Path path){
+        try {
+            bw.write("Path Starting ->>>>>>>>>>>\n");
+            for(int i = 0; i < path.locList.size(); i++) {
+                bw.write(path.locList.get(i).toString());
+                bw.newLine();
+            }
+            bw.flush();
         } catch (Exception e){}
     }
 
@@ -33,27 +59,15 @@ class Debug {
         try {
             bw.write(o.toString());
             bw.newLine();
+            bw.flush();
         } catch (Exception e){}
     }
 
     static void println(Object a, Object b){
         try {
-            bw.write(a+"-> "+b);
+            bw.write(a+"->"+b);
             bw.newLine();
-        } catch (Exception e){}
-    }
-
-    static void println(String desc, long val){
-        try {
-            bw.write(desc+"-> "+val);
-            bw.newLine();
-        } catch (Exception e){}
-    }
-
-    static void println(String desc, boolean bool){
-        try {
-            bw.write(desc+"-> "+bool);
-            bw.newLine();
+            bw.flush();
         } catch (Exception e){}
     }
 
@@ -63,6 +77,7 @@ class Debug {
         else {
             try {
                 bw.write("DEBUG_WARNING:("+s+")TIMER ALREADY EXISTS\n");
+                bw.flush();
             } catch (Exception e){}
         }
     }
@@ -76,6 +91,7 @@ class Debug {
                 bw.write(s+"->time(ms): "+(double)(System.nanoTime()-time)/1000000+'\n');
                 timers.remove(s);
             }
+            bw.flush();
         } catch (Exception e){}
     }
 

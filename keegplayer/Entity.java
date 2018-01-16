@@ -1,22 +1,20 @@
-import bc.GameController;
-import bc.MapLocation;
-import bc.Unit;
+import bc.*;
 
 class Entity {
 
     static GameController gc = Player.get_gc();
 
     int id = 0;
+    short seen = -1;
+    short hp = 0;
     Loc loc = new Loc();
-
-    void set(int id, MapLocation map_loc){
-        loc.x = (short) map_loc.getX();
-        loc.y = (short) map_loc.getY();
-    }
+    UnitType type = UnitType.Ranger;
+    boolean myTeam = false;
+    boolean dead = false;
 
     @Override
     public String toString() {
-        return "Entity: "+id+" "+loc;
+        return "Entity:"+id+","+loc+","+type+","+seen+","+hp;
     }
 
     Unit unit(){

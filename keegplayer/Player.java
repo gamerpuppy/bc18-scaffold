@@ -11,7 +11,16 @@ public class Player {
         team = gc.team();
 
         if (gc.planet() == Planet.Earth){
+            Debug.startTime("map");
             Map.init();
+            Debug.endTime("map");
+
+            Loc loc = new Loc(5,2);
+            Loc loc2 = new Loc(5,2);
+            Debug.println("equals?",loc.equals(loc2));
+            Path path = Path.getPathBFS(new Loc(10,2),new Loc(10,8));
+            Debug.println(path.locList.size());
+            Debug.printPath(path);
             UnitManager.init();
             runEarth();
         }
@@ -22,44 +31,24 @@ public class Player {
 
     static void runEarth(){
         while (true) {
+            /* START TURN */
             UnitManager.update();
 
-            for(int i = 0; i < UnitManager.newLen; i++){
-
-                int idx = UnitManager.newUnits[i];
-                Bot bot = UnitManager.entities[idx];
-
-                if (bot.type == UnitType.Worker) {
-                    Debug.println("adding worker",bot);
-                    WorkerManager.addWorker(idx);
-                } else if (bot.type == UnitType.Factory){
-                    Debug.println("adding factory",bot);
-                    WorkerManager.addFactory(idx);
-                }
-
-            }
-            WorkerManager.turn();
 
 
-            nextTurn();
+
+            /* END TURN */
+            UnitManager.finishTurn();
+            turn++;
+            gc.nextTurn();
         }
     }
 
-    static void runMars(){
+    static void runMars() {
         while (true) {
 
-
-
-            nextTurn();
+            gc.nextTurn();
         }
-    }
-
-    static void nextTurn(){
-        turn++;
-        try {
-            Debug.bw.flush();
-        } catch (Exception e){}
-        gc.nextTurn();
     }
 
     static GameController get_gc(){

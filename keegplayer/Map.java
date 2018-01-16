@@ -1,7 +1,4 @@
-import bc.GameController;
-import bc.MapLocation;
-import bc.PlanetMap;
-import bc.VecUnit;
+import bc.*;
 
 class Map {
 
@@ -18,28 +15,27 @@ class Map {
     static State state;
     static int width;
     static int height;
-    static boolean wall[][];
+    static boolean base[][];
+    static boolean pass[][];
 
     static void init(){
         map = gc.startingMap(gc.planet());
         width = (int) map.getWidth();
         height = (int) map.getHeight();
-        wall = new boolean[width][height];
+        pass = new boolean[width][height];
+        base = new boolean[width][height];
 //        state = typeOfSymmetry();
         state = State.NONE;
 
         MapLocation loc = new MapLocation(gc.planet(),0,0);
-
         for (int x = 0; x < width; x++){
             for (int y = 0; y < height; y++){
                 loc.setX(x);
                 loc.setY(y);
-                wall[x][y] = map.isPassableTerrainAt(loc) == 0;
+                pass[x][y] = map.isPassableTerrainAt(loc) == 1;
+                base[x][y] = map.isPassableTerrainAt(loc) == 1;
             }
         }
-
-//        Debug.printMap();
-
     }
 
     //TODO MAKE THIS WORK
@@ -53,5 +49,21 @@ class Map {
         }
         return State.NONE;
     }
+
+
+    static void reversePass(Entity active[], int len){
+        for(int i = 0; i < len; i++) {
+            Entity e = active[i];
+            short x = e.loc.x;
+            short y = e.loc.y;
+            pass[x][y] = true;
+        }
+    }
+
+    static boolean onMap(Loc loc){
+        boolean xCond =  loc.x >= 0 && loc.x < width;
+        return xCond && loc.y >= 0 && loc.y < height;
+    }
+
 
 }
